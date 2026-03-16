@@ -158,6 +158,28 @@ def generate_image():
         print(f"HF Error {response.status_code}: {error_text}")
         return jsonify({"error": "Image generation failed", "details": error_text}), 500            
 
+@app.route("/collect", methods=["POST"])
+def collect():
+    data = request.get_json()
+    mode = data.get("mode", "general")
+    user_message = data.get("userMessage", "")
+    response = data.get("response", "")
+    timestamp = data.get("timestamp", 0)
+    
+    # Save to training data file
+    import json
+    training_entry = {
+        "mode": mode,
+        "userMessage": user_message,
+        "response": response,
+        "timestamp": timestamp
+    }
+    
+    with open("training_data.jsonl", "a") as f:
+        f.write(json.dumps(training_entry) + "\n")
+    
+    return jsonify({"status": "collected"})
+
 if __name__ == "__main__":
     import os
     port = int(os.environ.get("PORT", 5000))
