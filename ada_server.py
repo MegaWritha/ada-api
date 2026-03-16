@@ -144,7 +144,7 @@ def generate_image():
     HF_KEY = os.environ.get("HF_API_KEY", "")
     
     response = req.post(
-        "https://api-inference.huggingface.co/models/black-forest-labs/FLUX.1-schnell",
+        "https://router.huggingface.co/hf-inference/models/black-forest-labs/FLUX.1-schnell",
         headers={"Authorization": f"Bearer {HF_KEY}"},
         json={"inputs": prompt}
     )
