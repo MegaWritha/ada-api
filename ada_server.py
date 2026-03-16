@@ -2,6 +2,8 @@ from flask import Flask, request, jsonify
 import numpy as np
 
 app = Flask(__name__)
+from flask_cors import CORS
+CORS(app)
 
 # === VOCABULARY ===
 vocabulary = [
@@ -131,6 +133,28 @@ def analyse():
 @app.route("/health", methods=["GET"])
 def health():
     return jsonify({"status": "Ada v3 is running"})
+
+import requests as req
+
+@app.route("/generate-image", methods=["POST"])
+def generate_image():
+    data = request.get_json()
+    prompt = data.get("prompt", "")
+    
+    HF_KEY = os.environ.get("HF_API_KEY", "")
+    
+    response = req.post(
+        "https://api-inference.huggingface.co/models/black-forest-labs/FLUX.1-schnell",
+        headers={"Authorization": f"Bearer {HF_KEY}"},
+        json={"inputs": prompt}
+    )
+    
+    if response.ok:
+        import base64
+        image_base64 = base64.b64encode(response.content).decode("utf-8")
+        return jsonify({"image": f"data:image/jpeg;base64,{image_base64}"})
+    else:
+        return jsonify({"error": "Image generation failed"}), 500            
 
 if __name__ == "__main__":
     import os
