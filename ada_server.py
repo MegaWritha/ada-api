@@ -154,7 +154,9 @@ def generate_image():
         image_base64 = base64.b64encode(response.content).decode("utf-8")
         return jsonify({"image": f"data:image/jpeg;base64,{image_base64}"})
     else:
-        return jsonify({"error": "Image generation failed"}), 500            
+        error_text = response.text
+        print(f"HF Error {response.status_code}: {error_text}")
+        return jsonify({"error": "Image generation failed", "details": error_text}), 500            
 
 if __name__ == "__main__":
     import os
