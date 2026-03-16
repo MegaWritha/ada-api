@@ -141,7 +141,7 @@ def generate_image():
     data = request.get_json()
     prompt = data.get("prompt", "")
     
-    HF_KEY = os.environ.get("HF_API_KEY", "")
+    HF_KEY = "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"
     
     response = req.post(
         "https://router.huggingface.co/hf-inference/models/black-forest-labs/FLUX.1-schnell",
